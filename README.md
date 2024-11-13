@@ -1,6 +1,12 @@
 # tout_chez_yo (tout-chez-yo)
 
-a tool that facilitates freelancers
+A tool that facilitates freelancers
+
+## Generate secret key
+```bash
+cd backend
+go run scritps/generate_key.go
+```
 
 ## Install the dependencies
 ```bash
