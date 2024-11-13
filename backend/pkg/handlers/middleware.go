@@ -9,7 +9,7 @@ import (
 )
 
 // Clé secrète utilisée pour signer et vérifier les tokens JWT (à garder confidentielle)
-var jwtSecret = []byte("votre_cle_secrete")
+var SECRET_KEY []byte
 
 // Middleware pour vérifier l'authentification par token JWT
 func AuthMiddleware(next http.Handler) http.Handler {
