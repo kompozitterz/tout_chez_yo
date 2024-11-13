@@ -9,6 +9,13 @@
   border-bottom: 1px solid whitesmoke;
   color: rgb(73, 160, 218);
 }
+div.q-item:nth-child(1),
+div.q-item:nth-child(2)
+ {
+  display: flex;
+  justify-content: center;
+  background-color: black;
+}
 // NAVBAR
 // SIDEBAR
 .q-drawer__content {

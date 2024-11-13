@@ -13,7 +13,7 @@ const router = createRouter({
 });
 
 const app = createApp(App);
-app.use(Quasar, { plugins: {} }); // Configurez Quasar avec des options vides (obligatoire)
+app.use(Quasar, { plugins: {} });
 // app.use(i18n);
 app.use(router);
 app.mount('#app');

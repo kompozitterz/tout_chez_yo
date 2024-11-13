@@ -34,7 +34,7 @@
               <q-item-section avatar>
                 <q-icon name="flag_us" />
               </q-item-section>
-              <q-item-section>🏴</q-item-section>
+              <q-item-section>🇬🇧</q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
