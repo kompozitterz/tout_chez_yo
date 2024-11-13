@@ -1,1 +1,58 @@
 // app global css in SCSS form
+.q-page {
+  background-color: black;
+  height: auto;
+}
+// NAVBAR
+.q-toolbar {
+  background-color: black;
+  border-bottom: 1px solid whitesmoke;
+  color: rgb(73, 160, 218);
+}
+// NAVBAR
+// SIDEBAR
+.q-drawer__content {
+  background-color: rgb(19, 19, 19);
+  color: whitesmoke;
+}
+.q-item__label--header {
+  color: whitesmoke;
+}
+a.q-item:nth-child(2):hover,
+a.q-item:nth-child(3):hover,
+a.q-item:nth-child(4):hover,
+a.q-item:nth-child(5):hover,
+a.q-item:nth-child(6):hover,
+a.q-item:nth-child(7):hover,
+a.q-item:nth-child(8):hover,
+a.q-item:nth-child(9):hover
+ {
+  color: rgb(73, 160, 218);
+}
+// SIDEBAR
+// INDEXPAGE
+div.q-badge:nth-child(1),
+div.q-badge:nth-child(2),
+div.q-badge:nth-child(3),
+div.q-badge:nth-child(4),
+div.q-badge:nth-child(5),
+div.q-badge:nth-child(6),
+div.q-badge:nth-child(7),
+div.q-badge:nth-child(8) {
+  background-color: black;
+  border: 1px solid whitesmoke;
+  cursor: pointer;
+}
+div.q-badge:nth-child(1):hover,
+div.q-badge:nth-child(2):hover,
+div.q-badge:nth-child(3):hover,
+div.q-badge:nth-child(4):hover,
+div.q-badge:nth-child(5):hover,
+div.q-badge:nth-child(6):hover,
+div.q-badge:nth-child(7):hover,
+div.q-badge:nth-child(8):hover {
+  transform: scale(1.02);
+  color: rgb(73, 160, 218);
+  border: 1px solid rgb(73, 160, 218);
+}
+// INDEXPAGE

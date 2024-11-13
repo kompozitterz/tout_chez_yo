@@ -1,17 +1,35 @@
+import MainLayout from 'layouts/MainLayout.vue';
+import IndexPage from 'pages/IndexPage.vue';
+import InventairePage from 'pages/InventairePage.vue';
+import ComptabilitePage from 'pages/ComptabilitePage.vue';
+import FacturationPage from 'pages/FacturationPage.vue';
+import DevisPage from 'pages/DevisPage.vue';
+import MessageriePage from 'pages/MessageriePage.vue';
+import TimesheetsPage from 'pages/TimesheetsPage.vue';
+import CollaborateursPage from 'pages/CollaborateursPage.vue';
+import CongesPage from 'pages/CongesPage.vue';
+import ErrorNotFound from 'pages/ErrorNotFound.vue';
+
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: MainLayout,
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
+      { path: '', component: IndexPage },
+      { path: 'inventaire', component: InventairePage },
+      { path: 'comptabilite', component: ComptabilitePage },
+      { path: 'facturation', component: FacturationPage },
+      { path: 'devis', component: DevisPage },
+      { path: 'messagerie', component: MessageriePage },
+      { path: 'timesheets', component: TimesheetsPage },
+      { path: 'collaborateurs', component: CollaborateursPage },
+      { path: 'conges', component: CongesPage },
     ],
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    component: ErrorNotFound,
   },
 ];
 

@@ -12,10 +12,10 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          TOUT CHEZ YO
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
@@ -28,11 +28,11 @@
         <q-item-label
           header
         >
-          Essential Links
+          Menu
         </q-item-label>
 
         <EssentialLink
-          v-for="link in linksList"
+          v-for="link in menuList"
           :key="link.title"
           v-bind="link"
         />
@@ -53,48 +53,54 @@ defineOptions({
   name: 'MainLayout',
 });
 
-const linksList = [
+const menuList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
+    title: 'Rédaction de devis',
+    // caption: 'quasar.dev',
+    icon: 'description',
+    // link: 'https://quasar.dev',
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
+    title: 'Facturation',
+    // caption: 'github.com/quasarframework',
+    icon: 'attach_money',
+    // link: 'https://github.com/quasarframework',
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
+    title: 'Comptabilité',
+    // caption: 'chat.quasar.dev',
+    icon: 'calculate',
+    // link: 'https://chat.quasar.dev',
+  },
+  {
+    title: 'Messagerie instantanée',
+    // caption: 'forum.quasar.dev',
     icon: 'chat',
-    link: 'https://chat.quasar.dev',
+    // link: 'https://forum.quasar.dev',
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
+    title: 'Timesheets',
+    // caption: '@quasarframework',
+    icon: 'watch',
+    // link: 'https://twitter.quasar.dev',
   },
   {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
+    title: 'Inventaire',
+    // caption: '@QuasarFramework',
+    icon: 'inventory',
+    // link: 'https://facebook.quasar.dev',
   },
   {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
+    title: 'Collaborateurs',
+    // caption: 'Community Quasar projects',
+    icon: 'groups',
+    // link: 'https://awesome.quasar.dev',
   },
   {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
+    title: 'Congés',
+    // caption: 'Community Quasar projects',
+    icon: 'beach_access',
+    // link: 'https://awesome.quasar.dev',
   },
 ];
 
