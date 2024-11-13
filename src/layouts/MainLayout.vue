@@ -34,10 +34,15 @@
               <q-item-section avatar>
                 <q-icon name="flag_us" />
               </q-item-section>
-              <q-item-section>🏴󠁧󠁢󠁥󠁮󠁧󠁿</q-item-section>
+              <q-item-section>🏴</q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
+
+        <!-- Boutons Register et Login -->
+        <q-space />
+        <q-btn flat dense label="Register" @click="$router.push('/register')" />
+        <q-btn flat dense label="Login" @click="$router.push('/login')" />
       </q-toolbar>
     </q-header>
 
