@@ -49,7 +49,18 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
         <q-item-label header>Menu</q-item-label>
-        <EssentialLink v-for="link in menuList" :key="link.title" v-bind="link" />
+        <q-item
+          v-for="link in menuList"
+          :key="link.title"
+          clickable
+          v-ripple
+          :to="link.link"
+        >
+          <q-item-section avatar>
+            <q-icon :name="link.icon" />
+          </q-item-section>
+          <q-item-section>{{ link.title }}</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -61,7 +72,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import EssentialLink from 'components/EssentialLink.vue';
 
 defineOptions({
   name: 'MainLayout',
@@ -70,51 +80,43 @@ defineOptions({
 const menuList = [
   {
     title: 'Rédaction de devis',
-    // caption: 'quasar.dev',
     icon: 'description',
-    // link: 'https://quasar.dev',
+    link: '/devis',
   },
   {
     title: 'Facturation',
-    // caption: 'github.com/quasarframework',
     icon: 'attach_money',
-    // link: 'https://github.com/quasarframework',
+    link: '/facturation',
   },
   {
     title: 'Comptabilité',
-    // caption: 'chat.quasar.dev',
     icon: 'calculate',
-    // link: 'https://chat.quasar.dev',
+    link: '/comptabilite',
   },
   {
     title: 'Messagerie instantanée',
-    // caption: 'forum.quasar.dev',
     icon: 'chat',
-    // link: 'https://forum.quasar.dev',
+    link: '/messagerie',
   },
   {
     title: 'Timesheets',
-    // caption: '@quasarframework',
     icon: 'watch',
-    // link: 'https://twitter.quasar.dev',
+    link: '/timesheets',
   },
   {
     title: 'Inventaire',
-    // caption: '@QuasarFramework',
     icon: 'inventory',
-    // link: 'https://facebook.quasar.dev',
+    link: '/inventaire',
   },
   {
     title: 'Collaborateurs',
-    // caption: 'Community Quasar projects',
     icon: 'groups',
-    // link: 'https://awesome.quasar.dev',
+    link: '/collaborateurs',
   },
   {
     title: 'Congés',
-    // caption: 'Community Quasar projects',
     icon: 'beach_access',
-    // link: 'https://awesome.quasar.dev',
+    link: '/conges',
   },
 ];
 
