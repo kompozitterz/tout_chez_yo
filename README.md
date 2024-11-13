@@ -8,6 +8,17 @@ cd backend
 go run scritps/generate_key.go
 ```
 
+## Start the backend server
+```bash
+go run .
+```
+
+## Start the frontend server
+Get to the root of the project
+```bash
+quasar dev
+```
+
 ## Install the dependencies
 ```bash
 yarn
