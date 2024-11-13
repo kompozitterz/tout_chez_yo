@@ -26,14 +26,14 @@ module.exports = {
     // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
 
     'airbnb-base'
-    
+
   ],
 
   plugins: [
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
     // required to lint *.vue files
     'vue',
-    
+
   ],
 
   globals: {
@@ -51,7 +51,7 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-    
+
     'no-plusplus': 'off',
     'no-param-reassign': 'off',
     'no-void': 'off',
@@ -67,8 +67,10 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
-    
+
     'prefer-promise-reject-errors': 'off',
+    // 'no-console': 'warn', //
+
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'

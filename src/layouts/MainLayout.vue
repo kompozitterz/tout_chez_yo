@@ -15,27 +15,36 @@
           TOUT CHEZ YO
         </q-toolbar-title>
 
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
+        <!-- Sélecteur de langue avec drapeaux -->
+        <q-btn-dropdown
+          flat
+          dense
+          color="primary"
+          icon="language"
+          label="语言"
+        >
+          <q-list>
+            <q-item clickable v-ripple @click="setLanguage('fr')">
+              <q-item-section avatar>
+                <q-icon name="flag_fr" />
+              </q-item-section>
+              <q-item-section>🇨🇵</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="setLanguage('en')">
+              <q-item-section avatar>
+                <q-icon name="flag_us" />
+              </q-item-section>
+              <q-item-section>🏴󠁧󠁢󠁥󠁮󠁧󠁿</q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Menu
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in menuList"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item-label header>Menu</q-item-label>
+        <EssentialLink v-for="link in menuList" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
@@ -109,4 +118,5 @@ const leftDrawerOpen = ref(false);
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
 </script>

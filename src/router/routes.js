@@ -9,6 +9,8 @@ import TimesheetsPage from 'pages/TimesheetsPage.vue';
 import CollaborateursPage from 'pages/CollaborateursPage.vue';
 import CongesPage from 'pages/CongesPage.vue';
 import ErrorNotFound from 'pages/ErrorNotFound.vue';
+import LoginPage from '../pages/LoginPage.vue';
+import RegisterPage from '../pages/RegisterPage.vue';
 
 const routes = [
   {
@@ -24,6 +26,8 @@ const routes = [
       { path: 'timesheets', component: TimesheetsPage },
       { path: 'collaborateurs', component: CollaborateursPage },
       { path: 'conges', component: CongesPage },
+      { path: '/login', name: 'Login', component: LoginPage },
+      { path: '/register', name: 'Register', component: RegisterPage },
     ],
   },
 
