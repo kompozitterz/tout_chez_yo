@@ -1,7 +1,10 @@
 @import 'src/css/quasar.variables.scss';
 
-button.q-btn:nth-child(8) {
+button.q-btn:nth-child(11) {
   margin-top: 4.5%;
   margin-left: 2%;
+}
+.q-page {
+  max-width: 100%;
 }
 

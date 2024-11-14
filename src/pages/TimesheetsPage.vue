@@ -19,26 +19,18 @@
           <div class="text-subtitle1">Heures de travail</div>
           <q-input filled v-model="heureArrivee" label="Heure d'arrivée" readonly />
           <div v-for="(pause, index) in pauses" :key="index" class="q-mb-sm">
-            <q-input filled v-model="pause.debut"
+            <q-input
+            filled v-model="pause.debut"
             :label="'Début de pause ' + (index + 1)" readonly />
-            <q-input filled v-model="pause.fin"
-            :label="'Fin de pause ' + (index + 1)" readonly />
+            <q-input filled v-model="pause.fin" :label="'Fin de pause ' + (index + 1)" readonly />
           </div>
           <q-input filled v-model="heureDepart" label="Heure de départ" readonly />
 
           <!-- Boutons pour enregistrer l'heure d'arrivée, départ, et les pauses -->
           <q-btn
-            :label="heureArrivee ? 'Enregistrer Heure de Départ' : 'Enregistrer Heure d\'Arrivée'"
-            color="primary"
-            @click="recordTime('main')"
-          />
-
-          <!-- Bouton dédié aux pauses -->
-          <q-btn
-            :label="pauseActionLabel"
-            color="secondary"
-            @click="recordTime('pause')"
-          />
+          :label="heureArrivee ? 'Enregistrer Heure de Départ' : 'Enregistrer Heure d\'Arrivée'"
+          color="primary" @click="recordTime('main')" />
+          <q-btn :label="pauseActionLabel" color="secondary" @click="recordTime('pause')" />
 
           <!-- Calcul du temps travaillé -->
           <q-input filled v-model="heuresTravaillees" label="Heures travaillées" readonly />
@@ -47,41 +39,42 @@
           <q-btn label="Enregistrer Feuille de Temps" color="primary" type="submit" />
         </q-form>
       </q-card-section>
+
+      <!-- Graphique des heures travaillées -->
+      <q-card-section>
+        <div class="text-subtitle1">Historique des heures travaillées</div>
+        <canvas ref="chart"></canvas>
+      </q-card-section>
     </q-card>
   </q-page>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import Chart from 'chart.js/auto';
 
 const collaborateur = ref({
-  nom: 'John Doe', // Exemple, pourrait être récupéré dynamiquement
+  nom: 'John Doe',
   id: '12345',
 });
-const date = ref(new Date().toISOString().slice(0, 10)); // Date actuelle par défaut
+const date = ref(new Date().toISOString().slice(0, 10));
 const heureArrivee = ref('');
 const heureDepart = ref('');
-const pauses = ref([
-  { debut: '', fin: '' },
-  { debut: '', fin: '' },
-  { debut: '', fin: '' },
-]);
-const heuresTravaillees = ref('0 h'); // Stockage réactif des heures travaillées
+const pauses = ref([{ debut: '', fin: '' }, { debut: '', fin: '' }, { debut: '', fin: '' }]);
+const heuresTravaillees = ref('0 h');
+const chartRef = ref(null);
+const chartInstance = ref(null);
 
-// Libellé du bouton de pause qui alterne entre "Début de Pause" et "Fin de Pause"
 const pauseActionLabel = computed(() => {
   const currentPause = pauses.value.find((pause) => !pause.debut || !pause.fin);
-  return currentPause && currentPause.debut && !currentPause.fin
-    ? 'Fin de Pause'
-    : 'Début de Pause';
+  return currentPause && currentPause.debut && !currentPause.fin ? 'Fin de Pause' : 'Début de Pause';
 });
 
-// Fonction pour calculer les heures travaillées
 function calculateHoursWorked() {
   if (heureArrivee.value && heureDepart.value) {
     const arrivee = new Date(`1970-01-01T${heureArrivee.value}:00`);
     const depart = new Date(`1970-01-01T${heureDepart.value}:00`);
-    let totalWorked = (depart - arrivee) / (1000 * 60 * 60); // Temps total entre arrivée et départ
+    let totalWorked = (depart - arrivee) / (1000 * 60 * 60);
 
     pauses.value.forEach((pause) => {
       if (pause.debut && pause.fin) {
@@ -96,37 +89,33 @@ function calculateHoursWorked() {
   }
 }
 
+function updateChart() {
+  if (chartInstance.value) {
+    chartInstance.value.data.datasets[0].data.push(parseFloat(heuresTravaillees.value));
+    chartInstance.value.update();
+  }
+}
+
 function recordTime(type) {
-  const currentTime = new Date().toTimeString().slice(0, 5); // Format HH:MM
+  const currentTime = new Date().toTimeString().slice(0, 5);
 
   if (type === 'main') {
     if (!heureArrivee.value) {
-      heureArrivee.value = currentTime; // Enregistre l'heure d'arrivée
-      // eslint-disable-next-line no-console
-      console.log(`Heure d'arrivée enregistrée: ${heureArrivee.value}`);
+      heureArrivee.value = currentTime;
     } else if (!heureDepart.value) {
-      heureDepart.value = currentTime; // Enregistre l'heure de départ
-      // eslint-disable-next-line no-console
-      console.log(`Heure de départ enregistrée: ${heureDepart.value}`);
+      heureDepart.value = currentTime;
       calculateHoursWorked();
+      updateChart(); // Appel de updateChart après sa définition
     }
   } else if (type === 'pause') {
     const currentPauseIndex = pauses.value.findIndex((pause) => !pause.debut || !pause.fin);
-
     if (currentPauseIndex !== -1) {
       if (!pauses.value[currentPauseIndex].debut) {
-        pauses.value[currentPauseIndex].debut = currentTime; // Enregistre le début de pause
-        // eslint-disable-next-line no-console
-        console.log(`Début de pause enregistré: ${pauses.value[currentPauseIndex].debut}`);
+        pauses.value[currentPauseIndex].debut = currentTime;
       } else if (!pauses.value[currentPauseIndex].fin) {
         pauses.value[currentPauseIndex].fin = currentTime;
-        // eslint-disable-next-line no-console
-        console.log(`Fin de pause enregistré: ${pauses.value[currentPauseIndex].fin}`);
       }
-
       pauses.value = [...pauses.value];
-      // eslint-disable-next-line no-console
-      console.log('État actuel des pauses :', pauses.value);
     }
   }
 }
@@ -142,7 +131,22 @@ function submitTimesheet() {
     heuresTravaillees: heuresTravaillees.value,
   });
 }
+
+onMounted(() => {
+  chartInstance.value = new Chart(chartRef.value, {
+    type: 'line',
+    data: {
+      labels: [], // Remplir avec les dates précédentes si disponible
+      datasets: [{
+        label: 'Heures travaillées',
+        data: [],
+        fill: false,
+        borderColor: 'blue',
+      }],
+    },
+  });
+});
 </script>
 
-<style src="../css/quasar.variables.scss" ></style>
+<style src="../css/quasar.variables.scss"></style>
 <style src="../css/timesheets.scss" scoped></style>
