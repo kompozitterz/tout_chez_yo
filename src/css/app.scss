@@ -1,3 +1,5 @@
+@import 'src/css/quasar.variables.scss';
+
 // app global css in SCSS form
 .q-page {
   background-color: black;
@@ -15,6 +17,9 @@ div.q-item:nth-child(2)
   display: flex;
   justify-content: center;
   background-color: black;
+}
+.q-toolbar > img:nth-child(3) {
+  color: white;
 }
 // NAVBAR
 // SIDEBAR

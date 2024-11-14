@@ -9,53 +9,128 @@
         <q-form @submit="submitDevis">
           <!-- Informations de l'entreprise -->
           <div class="text-subtitle1">Informations de l'entreprise</div>
-          <q-input filled v-model="entreprise.nom" label="Nom de l'entreprise" />
-          <q-input filled v-model="entreprise.adresse" label="Adresse" />
-          <q-input filled v-model="entreprise.telephone" label="Téléphone" type="tel" />
-          <q-input filled v-model="entreprise.email" label="Email" type="email" />
+          <q-input
+          filled v-model="entreprise.nom"
+          label="Nom de l'entreprise"
+          class="input"/>
+
+          <q-input
+          filled v-model="entreprise.adresse"
+          label="Adresse"
+          class="input"/>
+
+          <q-input
+          filled v-model="entreprise.telephone"
+          label="Téléphone"
+          type="tel"
+          class="input"/>
+
+          <q-input
+          filled v-model="entreprise.email"
+          label="Email"
+          type="email"
+          class="input"/>
 
           <!-- Informations du client -->
           <div class="text-subtitle1">Informations du Client</div>
-          <q-input filled v-model="client.nom" label="Nom du client" />
-          <q-input filled v-model="client.adresse" label="Adresse" />
-          <q-input filled v-model="client.telephone" label="Téléphone" type="tel" />
-          <q-input filled v-model="client.email" label="Email" type="email" />
+          <q-input
+          filled v-model="client.nom"
+          label="Nom du client"
+          class="input"/>
+
+          <q-input
+          filled v-model="client.adresse"
+          label="Adresse"
+          class="input"/>
+
+          <q-input
+          filled v-model="client.telephone"
+          label="Téléphone"
+          type="tel"
+          class="input"/>
+
+          <q-input
+          filled v-model="client.email"
+          label="Email"
+          type="email"
+          class="input"/>
 
           <!-- Date et numéro du devis -->
-          <q-input filled v-model="date" label="Date d'émission" type="date" />
-          <q-input filled v-model="numero" label="Numéro de devis" />
+          <q-input
+          filled v-model="date"
+          label="Date d'émission"
+          type="date"
+          class="input"/>
+
+          <q-input
+          filled v-model="numero"
+          label="Numéro de devis"
+          class="input"/>
 
           <!-- Description des services ou produits -->
           <div class="text-subtitle1">Détails des services/produits</div>
-          <q-input filled v-model="produit.description" label="Description" type="textarea" />
-          <q-input filled v-model="produit.quantite" label="Quantité" type="number" />
+          <q-input
+          filled v-model="produit.description"
+          label="Description"
+          type="textarea"
+          class="input"/>
+
+          <q-input
+          filled v-model="produit.quantite"
+          label="Quantité"
+          type="number"
+          class="input"/>
+
           <q-input
           filled v-model="produit.tarifUnitaire"
           label="Tarif unitaire (€)"
-          type="number" />
+          type="number"
+          class="input"/>
 
           <!-- Montants HT, TVA, TTC -->
-          <q-input filled v-model="montantHT" label="Montant Total HT (€)" type="number" />
-          <q-input filled v-model="tauxTVA" label="Taux de TVA (%)" type="number" />
-          <q-input filled :value="calculateTTC" label="Montant Total TTC (€)" readonly />
+          <q-input
+          filled v-model="montantHT"
+          label="Montant Total HT (€)"
+          type="number"
+          class="input"/>
+
+          <q-input filled v-model="tauxTVA"
+          label="Taux de TVA (%)"
+          type="number"
+          class="input"/>
+
+          <q-input filled :value="calculateTTC"
+          label="Montant Total TTC (€)"
+          readonly
+          class="input"/>
 
           <!-- Délai et conditions de livraison -->
-          <q-input filled v-model="delaiLivraison" label="Délai de livraison" />
+          <q-input
+          filled v-model="delaiLivraison"
+          label="Délai de livraison"
+          class="input"/>
 
           <!-- Conditions de paiement -->
           <q-input
           filled v-model="conditionsPaiement"
           label="Conditions de paiement"
-          type="textarea" />
+          type="textarea"
+          class="input"/>
 
           <!-- Validité du devis -->
-          <q-input filled v-model="validite" label="Validité du devis (en jours)" type="number" />
+          <q-input
+          filled v-model="validite"
+          label="Validité du devis (en jours)"
+          type="number"
+          class="input"/>
 
           <!-- Conditions générales de vente -->
           <q-input
-          filled v-model="conditionsGenerales"
+          filled
+          v-model="conditionsGenerales"
           label="Conditions générales de vente"
-          type="textarea" />
+          type="textarea"
+          class="input"/>
 
           <!-- Signature et accord -->
           <div class="text-subtitle1">Signature</div>

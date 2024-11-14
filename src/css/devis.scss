@@ -1,3 +1,26 @@
+@import 'src/css/quasar.variables.scss';
+
 body {
   background-color: black;
 }
+button.q-btn:nth-child(26) {
+  margin-left: 2%;
+}
+// .q-card {
+//   background-color: $dark;
+//   color: white;
+// }
+label.q-field:nth-child(2) > div:nth-child(1),
+input {
+  color: white;
+}
+.input {
+  color: white;
+}
+.focus-input .q-field__native:focus {
+  background-color: #e3f2fd; /* Couleur de fond en focus */
+  border-color: #1e88e5;     /* Couleur de la bordure en focus */
+  color: #1565c0;            /* Couleur du texte en focus */
+}
+
+

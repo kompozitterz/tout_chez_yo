@@ -11,6 +11,19 @@
           @click="toggleLeftDrawer"
         />
 
+        <!-- Bouton d'accueil -->
+        <q-btn
+          flat
+          dense
+          round
+          icon="home"
+          aria-label="Accueil"
+          @click="$router.push('/')"
+        />
+
+        <!-- Logo SVG -->
+        <img src="/public/Tout_chez_yo.svg" alt="Logo" style="height: 40px; margin-left: 8px;" />
+
         <q-toolbar-title>
           TOUT CHEZ YO
         </q-toolbar-title>
