@@ -12,7 +12,7 @@ import (
 )
 
 // Clé secrète pour signer le token JWT
-// var SECRET_KEY []byte
+// var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
 
 // HashPassword hache le mot de passe en utilisant bcrypt
 func HashPassword(password string) (string, error) {
@@ -60,14 +60,17 @@ func LoginUser(db *sql.DB, email, password string) (string, error) {
     var userID string
 
     row := db.QueryRow(`SELECT id, password FROM users WHERE email = ?`, email)
-    err := row.Scan(&userID, &hashedPassword)
-    if err != nil {
-        return "", err
-    }
+	  err := row.Scan(&userID, &hashedPassword)
+	  if err != nil {
+	  	if err == sql.ErrNoRows {
+	  		return "", errors.New("email introuvable")
+	  	}
+	  	return "", fmt.Errorf("erreur lors de la récupération de l'utilisateur : %v", err)
+	  }
 
     if !CheckPasswordHash(password, hashedPassword) {
         return "", errors.New("invalid password")
     }
-    fmt.Println("Connexion réussie !")
+    fmt.Printf("Utilisateur connecté %s\n", userID)
     return GenerateJWT(userID)
 }

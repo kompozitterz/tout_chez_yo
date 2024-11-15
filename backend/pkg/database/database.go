@@ -8,6 +8,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
+
 func InitDB() *sql.DB {
     // Vérifier que le dossier backend/database existe, sinon le créer
     if _, err := os.Stat("./backend/database"); os.IsNotExist(err) {

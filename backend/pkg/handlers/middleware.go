@@ -3,13 +3,14 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
 // Clé secrète utilisée pour signer et vérifier les tokens JWT (à garder confidentielle)
-var SECRET_KEY []byte
+var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
 
 // Middleware pour vérifier l'authentification par token JWT
 func AuthMiddleware(next http.Handler) http.Handler {

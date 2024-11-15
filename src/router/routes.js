@@ -14,6 +14,19 @@ import RegisterPage from '../pages/RegisterPage.vue';
 
 const routes = [
   {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegisterPage,
+    meta: { requiresAuth: false },
+  },
+
+  {
     path: '/',
     component: MainLayout,
     children: [
@@ -26,13 +39,14 @@ const routes = [
       { path: 'timesheets', component: TimesheetsPage },
       { path: 'collaborateurs', component: CollaborateursPage },
       { path: 'conges', component: CongesPage },
-      { path: '/login', name: 'Login', component: LoginPage },
-      { path: '/register', name: 'Register', component: RegisterPage },
+      // { path: '/login', name: 'Login', component: LoginPage },
+      // { path: '/register', name: 'Register', component: RegisterPage },
     ],
   },
 
   {
     path: '/:catchAll(.*)*',
+    name: 'ErrorNotFound',
     component: ErrorNotFound,
   },
 ];
