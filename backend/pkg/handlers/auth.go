@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -11,11 +12,12 @@ import (
 )
 
 // Clé secrète pour signer le token JWT
-var SECRET_KEY []byte
+// var SECRET_KEY []byte
 
 // HashPassword hache le mot de passe en utilisant bcrypt
 func HashPassword(password string) (string, error) {
     bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+    fmt.Println("Hashage du mot de passe réussi !")
     return string(bytes), err
 }
 
@@ -32,11 +34,12 @@ func GenerateJWT(userID string) (string, error) {
         "exp":     time.Now().Add(time.Hour * 24).Unix(), // Expiration dans 24 heures
     })
 
-    tokenString, err := token.SignedString(jwtSecret)
+    tokenString, err := token.SignedString(SECRET_KEY)
     if err != nil {
         return "", err
     }
 
+    fmt.Println("JWT généré avec succès !")
     return tokenString, nil
 }
 
@@ -48,6 +51,7 @@ func RegisterUser(db *sql.DB, username, email, password string) error {
 
     _, err = db.Exec(`INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)`,
         uuid.New().String(), username, email, hashedPassword)
+        fmt.Println("Enregistrement réussie !")
     return err
 }
 
@@ -64,6 +68,6 @@ func LoginUser(db *sql.DB, email, password string) (string, error) {
     if !CheckPasswordHash(password, hashedPassword) {
         return "", errors.New("invalid password")
     }
-
+    fmt.Println("Connexion réussie !")
     return GenerateJWT(userID)
 }
