@@ -53,6 +53,7 @@
 <script>
 import { ref } from 'vue';
 import apiClient from 'src/services/apiClient';
+import { Notify } from 'quasar';
 
 export default {
   setup() {
@@ -70,16 +71,30 @@ export default {
           password: password.value,
         });
 
+        // Utiliser la réponse pour afficher un message ou effectuer une vérification
+        // eslint-disable-next-line no-console
+        console.log('Réponse du serveur :', response.data);
+
         successMessage.value = 'Inscription réussie !';
         errorMessage.value = ''; // Réinitialiser les erreurs
-        // eslint-disable-next-line no-console
-        console.log('Réponse :', response.data);
 
-        // Rediriger vers la page de connexion après une inscription réussie
+        // Afficher une notification
+        Notify.create({
+          type: 'positive',
+          message: 'Inscription réussie. Redirection vers la page de connexion...',
+          timeout: 2000, // Notification pendant 2 secondes
+        });
+
+        // Rediriger après la notification
         setTimeout(() => {
-          window.location.href = '/login';
+          this.$router.push('/login');
         }, 2000);
       } catch (error) {
+        Notify.create({
+          type: 'negative',
+          message: 'Erreur lors de l’inscription. Veuillez réessayer.',
+        });
+
         // eslint-disable-next-line no-console
         console.error('Erreur lors de l’inscription :', error.response || error.message);
         successMessage.value = '';
