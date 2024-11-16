@@ -1,58 +1,61 @@
 <template>
   <q-layout>
-    <q-page class="flex flex-center center-card">
-      <q-card class="q-pa-md" style="width: 400px; max-width: 90%;">
-        <q-card-section>
-          <div class="text-h6 text-center">Inscription</div>
-        </q-card-section>
+    <q-page-container>
+      <q-page class="flex flex-center center-card">
+        <q-card class="q-pa-md" style="width: 400px; max-width: 90%;">
+          <q-card-section>
+            <div class="text-h6 text-center">Inscription</div>
+          </q-card-section>
 
-        <q-card-section>
-          <q-form @submit.prevent="register">
-            <q-input
-              filled
-              v-model="username"
-              label="Nom d'utilisateur"
-              :rules="[val => !!val || 'Le nom d’utilisateur est requis']"
-            />
-            <q-input
-              filled
-              v-model="email"
-              label="Email"
-              type="email"
-              :rules="[val => !!val || 'L’email est requis']"
-            />
-            <q-input
-              filled
-              v-model="password"
-              label="Mot de passe"
-              type="password"
-              :rules="[val => !!val || 'Le mot de passe est requis']"
-            />
+          <q-card-section>
+            <q-form @submit.prevent="register">
+              <q-input
+                filled
+                v-model="username"
+                label="Nom d'utilisateur"
+                :rules="[val => !!val || 'Le nom d’utilisateur est requis']"
+              />
+              <q-input
+                filled
+                v-model="email"
+                label="Email"
+                type="email"
+                :rules="[val => !!val || 'L’email est requis']"
+              />
+              <q-input
+                filled
+                v-model="password"
+                label="Mot de passe"
+                type="password"
+                :rules="[val => !!val || 'Le mot de passe est requis']"
+              />
+              <q-btn
+                label="S’inscrire"
+                type="submit"
+                color="primary"
+                class="full-width q-mt-md"
+              />
+            </q-form>
+          </q-card-section>
+
+          <q-card-actions align="center">
             <q-btn
-              label="S’inscrire"
-              type="submit"
+              flat
+              label="Déjà inscrit ? Se connecter"
+              @click="$router.push('/login')"
               color="primary"
-              class="full-width q-mt-md"
             />
-          </q-form>
-        </q-card-section>
-
-        <q-card-actions align="center">
-          <q-btn
-            flat
-            label="Déjà inscrit ? Se connecter"
-            @click="$router.push('/login')"
-            color="primary"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-page>
+          </q-card-actions>
+        </q-card>
+      </q-page>
+    </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { ref } from 'vue';
 import apiClient from 'src/services/apiClient';
+import { useRouter } from 'vue-router'; // Importer le routeur
 import { Notify } from 'quasar';
 
 export default {
@@ -62,6 +65,7 @@ export default {
     const password = ref('');
     const successMessage = ref('');
     const errorMessage = ref('');
+    const router = useRouter(); // Obtenez une instance du routeur
 
     const register = async () => {
       try {
@@ -87,7 +91,7 @@ export default {
 
         // Rediriger après la notification
         setTimeout(() => {
-          this.$router.push('/login');
+          router.push('/login'); // Utiliser l'instance de `router` au lieu de `this`
         }, 2000);
       } catch (error) {
         Notify.create({
