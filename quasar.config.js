@@ -85,6 +85,7 @@ module.exports = configure((/* ctx */) => ({
       '/api': {
         target: 'http://localhost:8080', // Adresse de votre backend
         changeOrigin: true,
+        pathRewrite: { '^/api': '' },
       },
     },
   },

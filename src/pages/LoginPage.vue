@@ -45,38 +45,58 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { ref } from 'vue';
+import apiClient from 'src/services/apiClient';
+import { useRouter } from 'vue-router'; // Importer le routeur Vue
+import { Notify } from 'quasar'; // Importer Notify pour les notifications
 
 export default {
   setup() {
     const email = ref('');
     const password = ref('');
+    const router = useRouter(); // Obtenir l'instance du routeur
 
     const login = async () => {
       try {
-        const response = await axios.post('http://localhost:8080/api/login', {
+        const response = await apiClient.post('/login', {
           email: email.value,
           password: password.value,
         });
 
-        // Stocke le token dans le localStorage ou Vuex
+        // Stocker le token dans localStorage
         localStorage.setItem('token', response.data.token);
-        // eslint-disable-next-line no-console
-        console.log('Connexion réussie !');
-        this.$router.push('/dashboard'); // Redirection après connexion
+
+        // Notification de succès
+        Notify.create({
+          type: 'positive',
+          message: "Connexion réussie ! Redirection vers la page d'accueil...",
+          timeout: 2000, // Notification visible pendant 2 secondes
+        });
+
+        // Redirection vers la page d'accueil
+        setTimeout(() => {
+          router.push('/'); // Redirige vers l'accueil
+        }, 2000);
       } catch (error) {
+        // Notification d'échec
+        Notify.create({
+          type: 'negative',
+          message:
+            error.response?.data || 'Échec de la connexion. Vérifiez vos informations.',
+        });
         // eslint-disable-next-line no-console
         console.error('Erreur lors de la connexion:', error);
-        // eslint-disable-next-line no-console
-        console.log('Échec de la connexion. Vérifiez vos informations.');
       }
     };
 
-    return { email, password, login };
+    return {
+      email,
+      password,
+      login,
+    };
   },
 };
 </script>
 
-<style src="../css/quasar.variables.scss" ></style>
+<style src="../css/quasar.variables.scss"></style>
 <style src="../css/authentification.scss" scoped></style>
