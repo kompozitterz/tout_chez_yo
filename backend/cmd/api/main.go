@@ -3,6 +3,7 @@ package main
 import (
 	"backend/pkg/database"
 	"backend/pkg/handlers"
+	"backend/pkg/middleware"
 	"log"
 	"net/http"
 	"os"
@@ -20,15 +21,20 @@ func main() {
 	defer db.Close()
 
 	router := mux.NewRouter()
-  router.Use(handlers.EnableCORS)
+  router.Use(middleware.EnableCORS)
 
   router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-      handlers.RegisterHandler(w, r, db)
-  }).Methods("POST")
+    if r.Method == http.MethodOptions {
+      log.Println("Requête OPTIONS capturée directement")
+      w.Header().Set("Access-Control-Allow-Origin", "*")
+      w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+      w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+      w.WriteHeader(http.StatusOK)
+      return
+    }
+    handlers.RegisterHandler(w, r, db)
+  }).Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-		handlers.RegisterHandler(w, r, db)
-	}).Methods("POST")
 
 	router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		handlers.LoginHandler(w, r, db)

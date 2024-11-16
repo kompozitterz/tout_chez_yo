@@ -3,12 +3,10 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"log"
 	"net/http"
-	"time"
 
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -26,7 +24,6 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-
 // HashPassword hache le mot de passe
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -34,61 +31,6 @@ func HashPassword(password string) (string, error) {
 		return "", fmt.Errorf("erreur lors du hashage : %w", err)
 	}
 	return string(bytes), nil
-}
-
-func LoginUser(db *sql.DB, email, password string) (string, error) {
-  var hashedPassword string
-  var userID string
-
-  row := db.QueryRow(`SELECT id, password FROM users WHERE email = ?`, email)
-  if err := row.Scan(&userID, &hashedPassword); err != nil {
-      return "", err
-  }
-
-  if !CheckPasswordHash(password, hashedPassword) {
-      return "", errors.New("mot de passe invalide")
-  }
-
-  token, err := GenerateJWT(userID)
-  if err != nil {
-      return "", err
-  }
-
-  return token, nil
-}
-
-// Handler pour la connexion
-func LoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	var req UserRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Requête invalide", http.StatusBadRequest)
-		return
-	}
-
-	token, err := LoginUser(db, req.Email, req.Password)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(token))
-}
-
-
-// GenerateJWT (si non défini ailleurs)
-func GenerateJWT(userID string) (string, error) {
-	if len(SECRET_KEY) == 0 {
-		return "", errors.New("clé secrète JWT non définie")
-	}
-
-	claims := jwt.MapClaims{
-		"user_id": userID,
-		"exp":     time.Now().Add(24 * time.Hour).Unix(),
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(SECRET_KEY)
 }
 
 // RegisterUser enregistre un utilisateur
@@ -111,11 +53,13 @@ func RegisterUser(db *sql.DB, username, email, password string) error {
 func RegisterHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	var req UserRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+    log.Println("Erreur de décodage JSON :", err)
 		http.Error(w, "Requête invalide", http.StatusBadRequest)
 		return
 	}
 
 	if err := RegisterUser(db, req.Username, req.Email, req.Password); err != nil {
+    log.Println("Erreur d’enregistrement :", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
