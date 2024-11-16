@@ -1,7 +1,7 @@
 <template>
   <q-layout>
     <q-page-container>
-      <q-page>
+      <q-page class="flex flex-center">
         <q-card class="q-pa-md" style="width: 400px; max-width: 90%;">
           <q-card-section>
             <div class="text-h6 text-center">Connexion</div>
@@ -32,10 +32,11 @@
           </q-card-section>
           <q-card-actions align="center">
             <q-btn
-            flat
-            label="Pas encore inscrit ? Créer un compte"
-            @click="$router.push('/register')"
-            color="primary" />
+              flat
+              label="Pas encore inscrit ? Créer un compte"
+              @click="$router.push('/register')"
+              color="primary"
+            />
           </q-card-actions>
         </q-card>
       </q-page>

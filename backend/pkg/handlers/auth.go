@@ -2,75 +2,48 @@ package handlers
 
 import (
 	"database/sql"
-	"errors"
-	"fmt"
-	"time"
-
-	"github.com/golang-jwt/jwt/v4"
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
+	"encoding/json"
+	"net/http"
 )
 
-// Clé secrète pour signer le token JWT
-// var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
-
-// HashPassword hache le mot de passe en utilisant bcrypt
-func HashPassword(password string) (string, error) {
-    bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-    fmt.Println("Hashage du mot de passe réussi !")
-    return string(bytes), err
+// Structure des requêtes
+type UserRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-// CheckPasswordHash compare un mot de passe en clair avec son haché
-func CheckPasswordHash(password, hash string) bool {
-    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-    return err == nil
+// Handler pour l'enregistrement
+func RegisterHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	var req UserRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	if err := RegisterUser(db, req.Username, req.Email, req.Password); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Utilisateur enregistré avec succès"))
 }
 
-// GenerateJWT génère un token JWT pour l'utilisateur
-func GenerateJWT(userID string) (string, error) {
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-        "user_id": userID,
-        "exp":     time.Now().Add(time.Hour * 24).Unix(), // Expiration dans 24 heures
-    })
+// Handler pour la connexion
+func LoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	var req UserRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
 
-    tokenString, err := token.SignedString(SECRET_KEY)
-    if err != nil {
-        return "", err
-    }
+	token, err := LoginUser(db, req.Email, req.Password)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 
-    fmt.Println("JWT généré avec succès !")
-    return tokenString, nil
-}
-
-func RegisterUser(db *sql.DB, username, email, password string) error {
-    hashedPassword, err := HashPassword(password)
-    if err != nil {
-        return err
-    }
-
-    _, err = db.Exec(`INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)`,
-        uuid.New().String(), username, email, hashedPassword)
-        fmt.Println("Enregistrement réussie !")
-    return err
-}
-
-func LoginUser(db *sql.DB, email, password string) (string, error) {
-    var hashedPassword string
-    var userID string
-
-    row := db.QueryRow(`SELECT id, password FROM users WHERE email = ?`, email)
-	  err := row.Scan(&userID, &hashedPassword)
-	  if err != nil {
-	  	if err == sql.ErrNoRows {
-	  		return "", errors.New("email introuvable")
-	  	}
-	  	return "", fmt.Errorf("erreur lors de la récupération de l'utilisateur : %v", err)
-	  }
-
-    if !CheckPasswordHash(password, hashedPassword) {
-        return "", errors.New("invalid password")
-    }
-    fmt.Printf("Utilisateur connecté %s\n", userID)
-    return GenerateJWT(userID)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(token))
 }

@@ -1,50 +1,53 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="q-pa-md" style="width: 400px; max-width: 90%;">
-      <q-card-section>
-        <div class="text-h6 text-center">Inscription</div>
-      </q-card-section>
+  <q-layout>
+    <q-page class="flex flex-center center-card">
+      <q-card class="q-pa-md" style="width: 400px; max-width: 90%;">
+        <q-card-section>
+          <div class="text-h6 text-center">Inscription</div>
+        </q-card-section>
 
-      <q-card-section>
-        <q-form @submit.prevent="register">
-          <q-input
-            filled
-            v-model="username"
-            label="Nom d'utilisateur"
-            :rules="[val => !!val || 'Le nom d’utilisateur est requis']"
-          />
-          <q-input
-            filled
-            v-model="email"
-            label="Email"
-            type="email"
-            :rules="[val => !!val || 'L’email est requis']"
-          />
-          <q-input
-            filled
-            v-model="password"
-            label="Mot de passe"
-            type="password"
-            :rules="[val => !!val || 'Le mot de passe est requis']"
-          />
+        <q-card-section>
+          <q-form @submit.prevent="register">
+            <q-input
+              filled
+              v-model="username"
+              label="Nom d'utilisateur"
+              :rules="[val => !!val || 'Le nom d’utilisateur est requis']"
+            />
+            <q-input
+              filled
+              v-model="email"
+              label="Email"
+              type="email"
+              :rules="[val => !!val || 'L’email est requis']"
+            />
+            <q-input
+              filled
+              v-model="password"
+              label="Mot de passe"
+              type="password"
+              :rules="[val => !!val || 'Le mot de passe est requis']"
+            />
+            <q-btn
+              label="S’inscrire"
+              type="submit"
+              color="primary"
+              class="full-width q-mt-md"
+            />
+          </q-form>
+        </q-card-section>
+
+        <q-card-actions align="center">
           <q-btn
-            label="S’inscrire"
-            type="submit"
+            flat
+            label="Déjà inscrit ? Se connecter"
+            @click="$router.push('/login')"
             color="primary"
-            class="full-width q-mt-md"
           />
-        </q-form>
-      </q-card-section>
-
-      <q-card-actions align="center">
-        <q-btn
-        flat
-        label="Déjà inscrit ? Se connecter"
-        @click="$router.push('/login')"
-        color="primary" />
-      </q-card-actions>
-    </q-card>
-  </q-page>
+        </q-card-actions>
+      </q-card>
+    </q-page>
+  </q-layout>
 </template>
 
 <script>
@@ -63,11 +66,24 @@ export default {
     };
 
     return {
-      username, email, password, register,
+      username,
+      email,
+      password,
+      register,
     };
   },
 };
 </script>
+
+<!-- <style scoped>
+/* Centrer le contenu avec flexbox */
+.center-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Assurez-vous que la page occupe toute la hauteur de l'écran */
+}
+</style> -->
 
 <style src="../css/quasar.variables.scss" ></style>
 <style src="../css/authentification.scss" scoped></style>
