@@ -12,11 +12,11 @@ import (
 )
 
 // Structure des requêtes
-type UserRequest struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+// type UserRequest struct {
+// 	Username string `json:"username"`
+// 	Email    string `json:"email"`
+// 	Password string `json:"password"`
+// }
 
 // CheckPasswordHash compare un mot de passe en clair avec son haché
 func CheckPasswordHash(password, hash string) bool {
@@ -51,7 +51,7 @@ func RegisterUser(db *sql.DB, username, email, password string) error {
 
 // Handler pour l'enregistrement
 func RegisterHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	var req UserRequest
+	var req User
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
     log.Println("Erreur de décodage JSON :", err)
 		http.Error(w, "Requête invalide", http.StatusBadRequest)

@@ -23,22 +23,17 @@ func main() {
 	router := mux.NewRouter()
   router.Use(middleware.EnableCORS)
 
-  router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+		handlers.RegisterHandler(w, r, db)
+	}).Methods("POST")
+
+	router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodOptions {
-      log.Println("Requête OPTIONS capturée directement")
-      w.Header().Set("Access-Control-Allow-Origin", "*")
-      w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-      w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
       w.WriteHeader(http.StatusOK)
       return
     }
-    handlers.RegisterHandler(w, r, db)
-  }).Methods("OPTIONS", "POST")
-
-
-	router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		handlers.LoginHandler(w, r, db)
-	}).Methods("POST")
+    // Votre logique de connexion ici...
+  }).Methods("POST", "OPTIONS")
 
 	log.Printf("Serveur démarré sur http://localhost:%s\n", port)
 	if err := http.ListenAndServe(":"+port, router); err != nil {

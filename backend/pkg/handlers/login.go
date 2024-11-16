@@ -11,6 +11,12 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+type User struct {
+  Username string `json:"username"`
+  Email    string `json:"email"`
+  Password string `json:"password"`
+}
+
 var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
 
 func LoginUser(db *sql.DB, email, password string) (string, error) {
@@ -36,7 +42,7 @@ func LoginUser(db *sql.DB, email, password string) (string, error) {
 
 // Handler pour la connexion
 func LoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	var req UserRequest
+	var req User
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Requête invalide", http.StatusBadRequest)
 		return
