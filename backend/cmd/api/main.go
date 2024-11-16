@@ -11,20 +11,21 @@ import (
 )
 
 func main() {
-	// Charger la configuration
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Port par défaut
+		port = "8080"
 	}
 
-	// Initialiser la base de données
 	db := database.InitDB()
 	defer db.Close()
 
-	// Configurer le routeur
 	router := mux.NewRouter()
+  router.Use(handlers.EnableCORS)
 
-	// Ajouter des routes
+  router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+      handlers.RegisterHandler(w, r, db)
+  }).Methods("POST")
+
 	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		handlers.RegisterHandler(w, r, db)
 	}).Methods("POST")
@@ -33,7 +34,6 @@ func main() {
 		handlers.LoginHandler(w, r, db)
 	}).Methods("POST")
 
-	// Lancer le serveur
 	log.Printf("Serveur démarré sur http://localhost:%s\n", port)
 	if err := http.ListenAndServe(":"+port, router); err != nil {
 		log.Fatalf("Erreur au démarrage du serveur : %v", err)
