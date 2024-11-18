@@ -54,7 +54,7 @@ export default {
   setup() {
     const email = ref('');
     const password = ref('');
-    const router = useRouter(); // Obtenir l'instance du routeur
+    const router = useRouter();
 
     const login = async () => {
       try {

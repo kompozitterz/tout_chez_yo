@@ -66,6 +66,8 @@ func updateEnvFile(secretKey string) error {
 
 func main() {
     // Générer une nouvelle clé secrète
+    userID := "exampleUser123" // Simuler un identifiant utilisateur
+
     secretKey, err := generateSecretKey()
     if err != nil {
         fmt.Println("Erreur lors de la génération de la clé :", err)
@@ -74,9 +76,10 @@ func main() {
 
     // Mettre à jour le fichier .env
     err = updateEnvFile(secretKey)
-    if err != nil {
-        fmt.Println("Erreur lors de la mise à jour de .env :", err)
-    } else {
-        fmt.Println("La clé secrète a été mise à jour avec succès dans .env")
-    }
+	  if err != nil {
+	  	fmt.Println("Erreur lors de la mise à jour de .env :", err)
+	  } else {
+	  	fmt.Println("La clé secrète a été mise à jour avec succès dans .env")
+	  	fmt.Printf("Clé secrète pour %s : %s\n", userID, secretKey)
+	  }
 }
