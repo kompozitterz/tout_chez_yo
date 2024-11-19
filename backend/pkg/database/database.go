@@ -4,32 +4,41 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 // InitDB initialise la base de données et retourne une instance *sql.DB
 func InitDB() *sql.DB {
-	// Vérifier que le dossier backend/database existe
-	if _, err := os.Stat("./backend/database"); os.IsNotExist(err) {
-		err = os.MkdirAll("./backend/database", 0755)
-		if err != nil {
-			log.Fatal("Erreur lors de la création du dossier database:", err)
-		}
-		log.Println("Dossier './backend/database' créé avec succès.")
+	// Obtenir le répertoire courant
+	baseDir, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("Erreur lors de la récupération du répertoire courant : %v", err)
 	}
+
+	// Construire le chemin absolu vers le dossier de la base de données
+	databasePath := filepath.Join(baseDir)
+	if _, err := os.Stat(databasePath); os.IsNotExist(err) {
+		err = os.MkdirAll(databasePath, 0755)
+		if err != nil {
+			log.Fatalf("Erreur lors de la création du dossier '%s': %v", databasePath, err)
+		}
+		log.Printf("Dossier '%s' créé avec succès.\n", databasePath)
+	}
+
+	// Chemin complet vers auth.db
+	dbFilePath := filepath.Join(databasePath, "auth.db")
 
 	// Ouvrir ou créer la base de données auth.db
-	db, err := sql.Open("sqlite3", "./backend/database/auth.db")
+	db, err := sql.Open("sqlite3", dbFilePath)
 	if err != nil {
-		log.Fatal("Erreur lors de l'ouverture de la base de données:", err)
+		log.Fatalf("Erreur lors de l'ouverture de la base de données '%s': %v", dbFilePath, err)
 	}
-	log.Println("Base de données './backend/database/auth.db' ouverte avec succès.")
+	log.Printf("Base de données '%s' ouverte avec succès.\n", dbFilePath)
 
-	// Créer la table des utilisateurs si elle n'existe pas
+	// Créer les tables nécessaires
 	createUsersTable(db)
-
-	// Créer la table des collaborateurs si elle n'existe pas
 	createCollaboratorsTable(db)
 
 	return db
@@ -37,25 +46,23 @@ func InitDB() *sql.DB {
 
 // createUsersTable vérifie et crée la table des utilisateurs
 func createUsersTable(db *sql.DB) {
-	statement, err := db.Prepare(`CREATE TABLE IF NOT EXISTS users (
-        id TEXT PRIMARY KEY,
-        username TEXT NOT NULL,
-        email TEXT UNIQUE,
-        password TEXT NOT NULL
-    );`)
-	if err != nil {
-		log.Fatal("Erreur lors de la préparation de la création de la table 'users':", err)
-	}
-
-	if _, err = statement.Exec(); err != nil {
-		log.Fatal("Erreur lors de l'exécution de la création de la table 'users':", err)
+	query := `
+	CREATE TABLE IF NOT EXISTS users (
+		id TEXT PRIMARY KEY,
+		username TEXT NOT NULL,
+		email TEXT UNIQUE,
+		password TEXT NOT NULL
+	);`
+	if _, err := db.Exec(query); err != nil {
+		log.Fatalf("Erreur lors de la création de la table 'users': %v", err)
 	}
 	log.Println("Table 'users' vérifiée ou créée avec succès.")
 }
 
 // createCollaboratorsTable vérifie et crée la table des collaborateurs
 func createCollaboratorsTable(db *sql.DB) {
-	statement, err := db.Prepare(`CREATE TABLE IF NOT EXISTS collaborateurs (
+	query := `
+	CREATE TABLE IF NOT EXISTS collaborateurs (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		nom TEXT NOT NULL,
 		prenom TEXT NOT NULL,
@@ -66,13 +73,9 @@ func createCollaboratorsTable(db *sql.DB) {
 		nationalite TEXT,
 		telephone TEXT,
 		email TEXT
-	);`)
-	if err != nil {
-		log.Fatal("Erreur lors de la préparation de la création de la table 'collaborateurs':", err)
-	}
-
-	if _, err = statement.Exec(); err != nil {
-		log.Fatal("Erreur lors de l'exécution de la création de la table 'collaborateurs':", err)
+	);`
+	if _, err := db.Exec(query); err != nil {
+		log.Fatalf("Erreur lors de la création de la table 'collaborateurs': %v", err)
 	}
 	log.Println("Table 'collaborateurs' vérifiée ou créée avec succès.")
 }

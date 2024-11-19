@@ -58,10 +58,25 @@ export default {
 
     const login = async () => {
       try {
+        // Log des données envoyées au backend
+        // eslint-disable-next-line no-console
+        console.log('Données envoyées au backend :', {
+          email: email.value,
+          password: password.value,
+        });
+
         const response = await apiClient.post('/login', {
           email: email.value,
           password: password.value,
         });
+        // eslint-disable-next-line no-console
+        console.log('Réponse complète du backend :', response);
+        // eslint-disable-next-line no-console
+        console.log('Réponse du backend :', response.data);
+
+        if (!response.data.token) {
+          throw new Error('Token non reçu !');
+        }
 
         // Stocker le token dans localStorage
         localStorage.setItem('token', response.data.token);

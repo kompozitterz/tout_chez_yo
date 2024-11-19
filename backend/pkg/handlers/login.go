@@ -4,40 +4,51 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
 type User struct {
-  Username string `json:"username"`
-  Email    string `json:"email"`
-  Password string `json:"password"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
-
 func LoginUser(db *sql.DB, email, password string) (string, error) {
-  var hashedPassword string
-  var userID string
+	log.Printf("Tentative de connexion avec l'email : %s", email)
 
-  row := db.QueryRow(`SELECT id, password FROM users WHERE email = ?`, email)
-  if err := row.Scan(&userID, &hashedPassword); err != nil {
-      return "", err
-  }
+	var hashedPassword string
+	var userID string
 
-  if !CheckPasswordHash(password, hashedPassword) {
-      return "", errors.New("mot de passe invalide")
-  }
+	row := db.QueryRow(`SELECT id, password FROM users WHERE email = ?`, email)
+	if err := row.Scan(&userID, &hashedPassword); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Println("Utilisateur non trouvé dans la base de données")
+			return "", errors.New("UTILISATEUR NON TROUVÉ")
+		}
+		log.Printf("Erreur SQL : %v", err)
+		return "", err
+	}
 
-  token, err := GenerateJWT(userID)
-  if err != nil {
-      return "", err
-  }
+	log.Printf("Utilisateur trouvé : ID=%s, Mot de passe haché=%s", userID, hashedPassword)
 
-  return token, nil
+	// Vérifier le mot de passe
+	if !CheckPasswordHash(password, hashedPassword) {
+		log.Println("Mot de passe incorrect")
+		return "", errors.New("MOT DE PASSE INVALIDE")
+	}
+
+	// Générer le token JWT
+	token, err := GenerateJWT(userID)
+	if err != nil {
+		log.Printf("Erreur lors de la génération du JWT : %v", err)
+		return "", err
+	}
+
+	return token, nil
 }
 
 // Handler pour la connexion
@@ -54,15 +65,23 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"token": token,
+		"user": map[string]string{
+			"email": req.Email,
+		},
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(token))
+	json.NewEncoder(w).Encode(response)
 }
 
-// GenerateJWT (si non défini ailleurs)
+
+// GenerateJWT génère un token JWT avec une clé par défaut
 func GenerateJWT(userID string) (string, error) {
-	if len(SECRET_KEY) == 0 {
-		return "", errors.New("clé secrète JWT non définie")
-	}
+	// Définir une clé par défaut pour signer le JWT
+	defaultSecretKey := []byte("default_secret_key")
 
 	claims := jwt.MapClaims{
 		"user_id": userID,
@@ -70,5 +89,6 @@ func GenerateJWT(userID string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(SECRET_KEY)
+	return token.SignedString(defaultSecretKey)
 }
+

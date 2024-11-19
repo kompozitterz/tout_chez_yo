@@ -67,42 +67,59 @@ export default {
     const errorMessage = ref('');
     const router = useRouter(); // Obtenez une instance du routeur
 
+    const validateForm = () => {
+      if (!username.value.trim()) {
+        Notify.create({ type: 'warning', message: "Le nom d'utilisateur est requis." });
+        return false;
+      }
+      if (!email.value.trim()) {
+        Notify.create({ type: 'warning', message: "L'email est requis." });
+        return false;
+      }
+      if (!password.value.trim()) {
+        Notify.create({ type: 'warning', message: 'Le mot de passe est requis.' });
+        return false;
+      }
+      return true;
+    };
+
     const register = async () => {
+      if (!validateForm()) return;
+
       try {
         const response = await apiClient.post('/register', {
           username: username.value,
           email: email.value,
           password: password.value,
         });
-
-        // Utiliser la réponse pour afficher un message ou effectuer une vérification
         // eslint-disable-next-line no-console
-        console.log('Réponse du serveur :', response.data);
+        console.log('Réponse du serveur :', response.data);
 
-        successMessage.value = 'Inscription réussie !';
-        errorMessage.value = ''; // Réinitialiser les erreurs
-
-        // Afficher une notification
         Notify.create({
           type: 'positive',
           message: 'Inscription réussie. Redirection vers la page de connexion...',
-          timeout: 2000, // Notification pendant 2 secondes
+          timeout: 2000,
         });
 
-        // Rediriger après la notification
         setTimeout(() => {
-          router.push('/login'); // Utiliser l'instance de `router` au lieu de `this`
+          router.push('/login');
         }, 2000);
       } catch (error) {
-        Notify.create({
-          type: 'negative',
-          message: 'Erreur lors de l’inscription. Veuillez réessayer.',
-        });
+        const status = error.response?.status;
 
+        if (status === 409) {
+          Notify.create({
+            type: 'negative',
+            message: 'Cet email est déjà utilisé. Veuillez en essayer un autre.',
+          });
+        } else {
+          Notify.create({
+            type: 'negative',
+            message: 'Erreur lors de l’inscription. Veuillez réessayer.',
+          });
+        }
         // eslint-disable-next-line no-console
         console.error('Erreur lors de l’inscription :', error.response || error.message);
-        successMessage.value = '';
-        errorMessage.value = error.response?.data || 'Erreur interne. Veuillez réessayer.';
       }
     };
 

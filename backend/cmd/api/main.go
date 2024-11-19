@@ -16,7 +16,7 @@ var SECRET_KEY []byte
 
 func main() {
 	// Chemin absolu vers le fichier .env
-	envPath := "/Users/cailloux/Desktop/OPotable/tout_chez_yo/backend/.env"
+	envPath := "/Users/cailloux/Desktop/OPotable/tout_chez_yo/backend/scripts/.env"
 
 	// Charger le fichier .env
 	err := godotenv.Load(envPath)
@@ -31,7 +31,7 @@ func main() {
 		log.Fatal("Erreur : SECRET_KEY n'est pas défini dans les variables d'environnement")
 	}
 	SECRET_KEY = []byte(secretKey)
-	log.Println("SECRET_KEY chargé avec succès")
+	log.Printf("SECRET_KEY chargé : %s", string(SECRET_KEY[:len(SECRET_KEY)/2])+"...")
 
 	// Afficher le répertoire de travail courant
 	dir, err := os.Getwd()

@@ -175,13 +175,13 @@ const leftDrawerOpen = ref(false);
 const isConnected = ref(false); // État de connexion
 const unreadNotifications = ref(0); // Compteur de notifications non lues
 const notifications = ref([]); // Liste des notifications
-const audio = new Audio('/public/notification.mp3'); // Fichier sonore pour les notifications
+// const audio = new Audio('/public/notification.mp3');
 
 // Ajouter une nouvelle notification
 function addNotification(title, message, icon) {
   notifications.value.push({ title, message, icon });
   unreadNotifications.value++;
-  audio.play(); // Jouer le son
+  // audio.play();
 }
 
 // Marquer une notification comme lue

@@ -4,10 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
-	"github.com/google/uuid"
+	"github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -34,36 +33,35 @@ func HashPassword(password string) (string, error) {
 }
 
 // RegisterUser enregistre un utilisateur
-func RegisterUser(db *sql.DB, username, email, password string) error {
-	hashedPassword, err := HashPassword(password)
-	if err != nil {
-		return fmt.Errorf("erreur lors du hashage : %w", err)
-	}
-
-	_, err = db.Exec(`INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)`,
-		uuid.New().String(), username, email, hashedPassword)
-	if err != nil {
-		return fmt.Errorf("erreur lors de l'insertion : %w", err)
-	}
-
-	return nil
-}
-
-// Handler pour l'enregistrement
 func RegisterHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	var req User
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-    log.Println("Erreur de décodage JSON :", err)
+	var user User
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, "Requête invalide", http.StatusBadRequest)
 		return
 	}
 
-	if err := RegisterUser(db, req.Username, req.Email, req.Password); err != nil {
-    log.Println("Erreur d’enregistrement :", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	// Hasher le mot de passe
+	hashedPassword, err := HashPassword(user.Password)
+	if err != nil {
+		http.Error(w, "Erreur lors du hachage du mot de passe", http.StatusInternalServerError)
+		return
+	}
+
+	// Insertion dans la base de données
+	_, err = db.Exec(`INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
+		user.Username, user.Email, hashedPassword)
+	if err != nil {
+		// Vérifier si c'est une erreur liée à une contrainte UNIQUE
+		if sqliteErr, ok := err.(sqlite3.Error); ok && sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
+			http.Error(w, "Cet email est déjà utilisé", http.StatusConflict)
+			return
+		}
+		http.Error(w, "Erreur lors de l'insertion : "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Utilisateur enregistré avec succès"))
+	w.Write([]byte("Utilisateur créé avec succès"))
 }
+
+
